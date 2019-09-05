@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.k2data.precast.mapper.UserDiagramMapper">
+
+    <select id="queryForPage" resultType="com.k2data.precast.entity.dto.UserDiagramDo">
+        <bind name="userLike" value="'%'+username +'%'"></bind>
+        SELECT
+        idN.`user_name`as customName,
+        `用气量比率` AS gasUsedRadio,
+        `用气价格` AS price,
+        `用气计划匹配度` AS gasPlanMatch,
+        `用气合同匹配度` AS gasContractMatch,
+        `用气增长量` AS gasUsedGrowth,
+        `用气增长率` AS gasUsedGrowthRadio,
+        `可承受气价` AS acceptablePrice,
+        `客户行业气价偏离系数` AS divergeRadio,
+        `用气稳定系数` AS stabilization,
+        `自定义` AS score,
+        `温度气量敏感系数` AS temperatureInfluenceRadio,
+        `类别` AS category,
+        `自定义类别` AS clusterCategory,
+        `行业标识` AS customIndustry,
+        `发展评分` AS developScore,
+        cpt.`custom_point` AS artificialScore,
+        `保供` AS guaranteedSupplyScore,
+        `供大于求` AS overFlowSupplyScore,
+        `供小于求` AS insufficientSupplyScore
+        FROM
+        (real_data_with_score1 AS comScore
+        LEFT JOIN id_name AS idN ON ( comScore.`用户名称` = idN.user_id))
+        LEFT JOIN id_type AS idT ON (comScore.`用户名称`  = idT.user_id)
+        LEFT JOIN custom_point_t AS cpt ON (idN.user_name = cpt.`user_name`)
+        WHERE
+        comScore.sys_user_id = #{userId}
+        AND idN.`user_name` IS NOT NULL
+        <if test="username != null and '' neq username">
+            AND idN.user_name like #{userLike}
+        </if>
+        <if test="type != null and '' neq type and '-1' neq type ">
+            AND comScore.`类别` = #{type}
+        </if>
+        <if test="businessType != null and 'all' neq businessType">
+            AND comScore.`行业标识` = #{businessType}
+        </if>
+        <if test="loc != null and '' neq loc">
+            AND idT.addressme = #{loc}
+        </if>
+        <if test="clusterCategory != null and -1 neq clusterCategory">
+            AND comScore.`自定义类别` = #{clusterCategory}
+        </if>
+        <if test="industryCategory != null and -1 neq industryCategory">
+            AND comScore.`行业类别` = #{industryCategory}
+        </if>
+        <if test="order != null and asc != null">
+            ORDER BY ${order}
+            <choose>
+                <when test="asc eq 'asc' ">
+                    ASC
+                </when>
+                <otherwise>
+                    DESC
+                </otherwise>
+            </choose>
+        </if>
+        limit #{offset} ,#{limit}
+    </select>
+
+    <select id="queryCount" resultType="java.lang.Integer">
+        <bind name="userLike" value="'%'+username +'%'"></bind>
+        SELECT COUNT (1)
+        FROM
+        (real_data_with_score1 AS comScore
+        LEFT JOIN id_name AS idN ON (comScore.`用户名称` = idN.user_id))
+        LEFT JOIN id_type AS idT ON (comScore.`用户名称` = idT.user_id)
+        WHERE
+        comScore.sys_user_id = #{userId}
+        AND idN.`user_name` IS NOT NULL
+        AND idT.user_id = comScore.`用户名称`
+        <if test="username != null and '' neq username">
+            AND idN.user_name like #{userLike}
+        </if>
+        <if test="type != null and '' neq type and '-1' neq type">
+            AND comScore.`类别` = #{type}
+        </if>
+        <if test="loc != null and '' neq loc">
+            AND idT.addressme = #{loc}
+        </if>
+        <if test="businessType != null and 'all' neq businessType">
+            AND comScore.`行业标识` = #{businessType}
+        </if>
+        <if test="clusterCategory != null and -1 neq clusterCategory">
+            AND comScore.`自定义类别` = #{clusterCategory}
+        </if>
+        <if test="industryCategory != null and -1 neq industryCategory">
+            AND comScore.`行业类别` = #{industryCategory}
+        </if>
+
+    </select>
+    <update id="updateModelScoreRadio">
+        update `system_param_t` set `value` = #{radio} WHERE user_id=#{userId} AND `key` = "model_score_radio"
+    </update>
+    <update id="updateSpecialMetrics">
+        update `system_param_t` set `value` = #{specialMetric} WHERE user_id=#{userId} AND `key` = "special_metrecs"
+    </update>
+    <select id="querySystemParam" resultType="java.lang.Object">
+        select `value` FROM system_param_t WHERE user_id=#{userId} AND `key` = #{key}
+    </select>
+    <delete id="clearData">
+        DELETE  FROM real_data_with_score1 WHERE sys_user_id = #{userId}
+    </delete>
+
+    <insert id="addScoreRadio">
+        INSERT INTO system_param_t (`user_id`,`key`,`value`) values (#{userId},#{key},#{value})
+    </insert>
+
+    <insert id="addSpecialMetrics">
+        INSERT INTO system_param_t (`user_id`,`key`,`value`) values (#{userId},#{key},#{value})
+    </insert>
+</mapper>

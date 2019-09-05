@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.k2data.precast.mapper.UserMapper">
+    <select id="getUserByLoginName" resultType="com.k2data.precast.entity.dto.User">
+      SELECT id as userId,user_name as userName,password,login_name as loginName FROM sys_user_info_t
+      WHERE login_name = #{loginName}
+    </select>
+    <update id="updateUser">
+        update sys_user_info_t
+        <if test="userName != null">
+            set user_name = #{userName}
+        </if>
+        <if test="password != null and password != ''">
+            set password = #{password}
+        </if>
+    </update>
+</mapper>

@@ -1,0 +1,255 @@
+<script type="text/javascript" src="/js/jquery/icheck.min.js"></script>
+<script type="text/javascript" src="/js/user-diagram/user-diagram.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/user-diagram/blue.css"/>
+<style type="text/css">
+    a {
+        text-decoration: none
+    }
+</style>
+<div id="loading" class="myMark off">
+    <div id="loadingContent" class="loading off"></div> &emsp;<span
+        style="font-size: 16px;color: #f3e97a">正在分析......</span>
+</div>
+<div id="parent" style="height: 100%">
+    <div class="margin-top10 block div-left" style="height: 7%">
+        <div class="left-user property-width">
+            <label class="left-20 form-label label-top margin-top10" style="width: 64px;">客户类型</label>
+            <select id="type-select" class="left-user selectpicker show-tick form-control select-w"
+                    data-live-search="true" name="type-select">
+                <option value="-1">全部</option>
+                <option value="0">0类客户</option>
+                <option value="1">1类客户</option>
+                <option value="2">2类客户</option>
+                <option value="3">3类客户</option>
+            </select>
+        </div>
+
+        <div class="left-user property-width-2">
+            <label class="left-20 form-label label-top margin-top10" style="width: 32px;">行业</label>
+            <select id="business_type" class="left-20 selectpicker show-tick form-control select-w"
+                    data-live-search="true"
+                    name="type-select">
+                <option value="all">全部</option>
+                <option value="化工1">化工1</option>
+                <option value="化工2">化工2</option>
+                <option value="城市燃气">城市燃气</option>
+                <option value="建材">建材</option>
+                <option value="冶金">冶金</option>
+                <option value="机械">机械</option>
+                <option value="化肥">化肥</option>
+                <option value="CNG">CNG</option>
+                <option value="化工3">化工3</option>
+                <option value="轻工">轻工</option>
+                <option value="电力">电力</option>
+                <option value="玻璃">玻璃</option>
+                <option value="其它工业">其它工业</option>
+                <option value="电子">电子</option>
+                <option value="石油炼化">石油炼化</option>
+                <option value="其它">其它</option>
+                <option value="LNG">LNG</option>
+                <option value="商业">商业</option>
+                <option value="军工">军工</option>
+                <option value="汽车加气">汽车加气</option>
+            </select>
+        </div>
+
+        <div class="left-user property-width-2">
+            <label class="left-20 form-label label-top margin-top10" style="width: 32px;">地区</label>
+            <select id="loc" class="left-20 selectpicker show-tick form-control select-w"
+                    data-live-search="true"
+                    name="type-select">
+                <option value="">请选择</option>
+            </select>
+        </div>
+        <div class="left-user property-width">
+            <label class="left-20 form-label label-top margin-top10" style="width: 64px;">模型指标</label>
+            <select id="model-select"
+                    class="left-user selectpicker show-tick form-control select-w"
+                    data-live-search="false" name="model-select" style="width: 100px">
+                <option value="1">自定义</option>
+                <option value="2">保供</option>
+                <option value="3">供大于求</option>
+                <option value="4">供不应求</option>
+            </select>
+        </div>
+        <label class="left-user form-label label-top">客户关键字</label>
+        <input id="search_name" class="left-user  form-control" name="area"/>
+        <label class="left-user form-label label-top">模型打分占比</label>&emsp;&emsp;
+        <label id="scoreRadio" class="left-user form-label label-top">  </label>
+        <button id="search_btn" class="btn btn-info btn-lg left-user bth-query">查询</button>
+
+    </div>
+    <div class="margin-top10 block div-left" style="height: 8%;width: 85%;">
+        <form id="paramForm" class="form-horizontal" action="#">
+            <div class="form-group">
+                <button id="paramSetting" type="button" class="btn btn-info  btn-sm left-user">模型参数设置</button>
+                <button id="executeAnalysis" type="button" class="btn btn-info btn-sm left-user">模型分析</button>
+
+                <div class="left-user">
+                    <label class="left-20 form-label label-top margin-top10" style="width: 64px;">聚类类别</label>
+                    <select id="cluster-select" class="selectpicker show-tick form-control select-w"
+                            data-live-search="false" name="cluster-select" style="width: 100px;display: block">
+                        <option value="-1">全部</option>
+                        <option value="0">类别0</option>
+                        <option value="1">类别1</option>
+                        <option value="2">类别2</option>
+                        <option value="3">类别3</option>
+                    </select>
+                </div>
+                <div class="left-user">
+                    <label class="left-20 form-label label-top margin-top10" style="width: 64px;">行业类别</label>
+                    <select id="industry-select" class="selectpicker show-tick form-control select-w"
+                            data-live-search="false" name="cluster-select" style="width: 100px;display: block">
+                        <option value="-1">全部</option>
+                        <option value="1">城市燃气</option>
+                        <option value="2">可中断</option>
+                        <option value="3">不可中断</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="table-div" class="margin-top10 div-left">
+        <table id="tale-grid" class="margin-top10">
+        </table>
+    </div>
+
+    <!-- 弹出框 begin-->
+    <div class="modal fade" id="myModal" style="width: 100%" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="height: 40px;">
+                    <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+                    <!--<span aria-hidden="true">×</span>-->
+                    <!--</button>-->
+                    <h4 class="modal-title" id="myModalLabel">模型分析参数设置</h4>
+                </div>
+                <div class="modal-body" style="height: 510px">
+                    <div style="width: 100%;height: 40px;">
+
+                        <input id="customModelIndex" type="checkbox"
+                               style="float: left;margin-top: 9px;margin-left: 180px;"
+                               class="checkbox" checked/>
+                        <label style="float: left;margin-left: 3px;font-size: 12px;margin-top: 8px;">自定义模型指标</label>
+                        <label style="float: left;font-size: 12px;margin-top: 8px;margin-left: 50px;">模型打分占比</label>
+                        <input id="modelScoreRadio"
+                               class="form-control left"
+                               type="number"
+                               value="0"
+                               min="0" max="100"
+                               style="float:left;width: 70px;height:35px;margin-left: 10px;"><label
+                            style="margin-left: 5px;float: left;font-size: 18px;margin-top: 5px;">%</label>
+                    </div>
+
+                    <div id="customModelIndexPanel" style="width: 100%;height: 450px; display: block;">
+                        <div class="left" style="width: 100%;float: left; margin-left: 20px;">
+                            <table id="paramTable" class="table">
+                                <th width="30%">指标名称</th>
+                                <th width="20%">指标比重</th>
+                                <th width="20%">占比</th>
+                                <th width="30%">排序</th>
+                                <tbody id="tableBody">
+                                <tr>
+                                    <td>用气量比率</td>
+                                    <td><input type="number" min="1" value="1"
+                                               style="width: 50px;border:1px solid #d3d3d3"/></td>
+                                    <td><span name="value">8.33</span>%</td>
+                                    <td><a href="#" onclick="up(this)">&#8593</a> | <a href="#" onclick="down(this)">&#8595</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>用气价格</td>
+                                    <td><input type="number" min="1" value="1"
+                                               style="width: 50px;border:1px solid #d3d3d3"/></td>
+                                    <td><span name="value">8.33</span>%</td>
+                                    <td><a href="#" onclick="up(this)">&#8593</a> | <a href="#" onclick="down(this)">&#8595</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>用气计划匹配度</td>
+                                    <td><input type="number" min="1" value="1"
+                                               style="width: 50px;border:1px solid #d3d3d3"/></td>
+                                    <td><span name="value">8.33</span>%</td>
+                                    <td><a href="#" onclick="up(this)">&#8593</a> | <a href="#" onclick="down(this)">&#8595</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>用气合同匹配度</td>
+                                    <td><input type="number" min="1" value="1"
+                                               style="width: 50px;border:1px solid #d3d3d3"/></td>
+                                    <td><span name="value">8.33</span>%</td>
+                                    <td><a href="#" onclick="up(this)">&#8593</a> | <a href="#" onclick="down(this)">&#8595</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>用气增长量</td>
+                                    <td><input type="number" min="1" value="1"
+                                               style="width: 50px;border:1px solid #d3d3d3"/></td>
+                                    <td><span name="value">8.33</span>%</td>
+                                    <td><a href="#" onclick="up(this)">&#8593</a> | <a href="#" onclick="down(this)">&#8595</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>用气增长率</td>
+                                    <td><input type="number" min="1" value="1"
+                                               style="width: 50px;border:1px solid #d3d3d3"/></td>
+                                    <td><span name="value">8.33</span>%</td>
+                                    <td><a href="#" onclick="up(this)">&#8593</a> | <a href="#" onclick="down(this)">&#8595</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>可承受气价</td>
+                                    <td><input type="number" min="1" value="1"
+                                               style="width: 50px;border:1px solid #d3d3d3"/></td>
+                                    <td><span name="value">8.33</span>%</td>
+                                    <td><a href="#" onclick="up(this)">&#8593</a> | <a href="#" onclick="down(this)">&#8595</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>发展评分</td>
+                                    <td><input type="number" min="1" value="1"
+                                               style="width: 50px;border:1px solid #d3d3d3"/></td>
+                                    <td><span name="value">8.33</span>%</td>
+                                    <td><a href="#" onclick="up(this)">&#8593</a> | <a href="#" onclick="down(this)">&#8595</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>客户行业气价偏离系数</td>
+                                    <td><input type="number" min="1" value="1"
+                                               style="width: 50px;border:1px solid #d3d3d3"/></td>
+                                    <td><span name="value">8.33</span>%</td>
+                                    <td><a href="#" onclick="up(this)">&#8593</a> | <a href="#" onclick="down(this)">&#8595</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>用气稳定系数</td>
+                                    <td><input type="number" min="1" value="1"
+                                               style="width: 50px;border:1px solid #d3d3d3"/></td>
+                                    <td><span name="value">8.33</span>%</td>
+                                    <td><a href="#" onclick="up(this)">&#8593</a> | <a href="#" onclick="down(this)">&#8595</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>温度气量敏感系数</td>
+                                    <td><input type="number" min="1" value="1"
+                                               style="width: 50px;border:1px solid #d3d3d3"/></td>
+                                    <td><span name="value">8.33</span>%</td>
+                                    <td><a href="#" onclick="up(this)">&#8593</a> | <a href="#" onclick="down(this)">&#8595</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button id="saveButton" type="button" class="btn btn-default" data-dismiss="modal"
+                            onclick="saveParam()">确认
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 弹出框 end-->
+</div>
