@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.k2data.precast.mapper.TemperatureMapper">
+
+    <select id="queryTemperature" resultType="com.k2data.precast.entity.dto.TemperatureDo">
+     select `date`,`max_temperature` as maxTemperature,`min_temperature` as minTemperature from `temperature_city` as tmpera LEFT JOIN `id_type` as ids ON (tmpera.city = ids.addressme) where ids.user_id= #{userId} AND datetime(`date`) between datetime(#{beginDate}) and datetime(#{endDate}) ORDER BY `date`
+    </select>
+
+
+    <select id="queryTemperaturePre" resultType="com.k2data.precast.entity.dto.TemperatureDo">
+     select `date`,`max_temperature` as maxTemperature,`min_temperature` as minTemperature from `temperature_city_pre` as tmpera LEFT JOIN `id_type` as ids ON (tmpera.city = ids.addressme) where ids.user_id= #{userId} AND datetime(`date`) between datetime(#{beginDate}) and datetime(#{endDate}) ORDER BY `date`
+    </select>
+
+
+    <select id="queryTemperatureByCity" resultType="com.k2data.precast.entity.dto.TemperatureDo">
+     select `date`,`max_temperature` as maxTemperature,`min_temperature` as minTemperature from `temperature_city` as tmpera  where tmpera.city = #{city} AND datetime(`date`) between datetime(#{beginDate}) and datetime(#{endDate}) ORDER BY `date`
+    </select>
+
+    <select id="queryTemperaturePreByCity" resultType="com.k2data.precast.entity.dto.TemperatureDo">
+     select `date`,`max_temperature` as maxTemperature,`min_temperature` as minTemperature from `temperature_city_pre` as tmpera  where tmpera.city = #{city} AND datetime(`date`) between datetime(#{beginDate}) and datetime(#{endDate}) ORDER BY `date`
+    </select>
+
+    <select id="queryUserAmount" resultType="com.k2data.precast.entity.dto.UserAmountDo">
+        select `date`,`use_amount` as useAmount FROM `user_amount` WHERE `user_id` = #{userId} AND datetime(`date`) between datetime(#{beginDate}) and datetime(#{endDate}) ORDER BY `date`
+    </select>
+
+    <select id="queryUserAmountPredict" resultType="com.k2data.precast.entity.dto.UserAmountDo">
+        select `date`,`ryql` as useAmount FROM `predict_ryql` WHERE `company_name` = #{userName} AND datetime(`date`) between datetime(#{beginDate}) and datetime(#{endDate}) ORDER BY `date`
+    </select>
+
+    <select id="queryAreaAmount" resultType="com.k2data.precast.entity.dto.UserAmountDo">
+        SELECT `date`, SUM (`use_amount`) AS useAmount FROM `user_amount` AS amt LEFT JOIN `id_type` loc ON
+        (amt.user_id = loc.user_id) WHERE loc.addressme = #{address}
+        AND datetime(`date`) between datetime(#{beginDate}) and datetime(#{endDate}) GROUP BY loc.addressme,amt.`date`
+        ORDER BY `date`
+    </select>
+    <select id="queryArea" resultType="java.lang.String">
+        SELECT distinct `addressme` FROM `id_type`
+    </select>
+    <select id="queryBusinessTypes" resultType="java.lang.String">
+        SELECT distinct `business_t` FROM `id_type` as idT,`id_name` as idN on (idT.user_id = idN.user_id)
+        WHERE idN.has_amount AND idN.user_name = #{username}
+    </select>
+
+    <select id="queryIndexByName" resultType="java.lang.Long">
+        SELECT distinct `user_id` FROM `id_name` where has_amount = 1 AND `user_name` = #{username}
+    </select>
+
+
+    <select id="queryNameByArea" resultType="java.lang.String">
+        <bind name="likeStr" value="'%'+username +'%'"></bind>
+        select distinct idN.user_name as username from id_name as idN left join id_type as idT on (idN.user_id = idT.user_id)
+        where
+        idN.has_amount = 1
+        <if test="area != null and area neq ''">
+            AND idT.addressme = #{area}
+        </if>
+        AND idN.user_name like #{likeStr} order by username ASC limit 0,8
+    </select>
+
+    <select id="queryCompanyName" resultType="java.lang.String">
+        select dwD.dw_name FROM id_name as idN left join dw_dict as dwD ON(idN.dw_id=dwD.dw_id) where idN.user_name =#{username}
+    </select>
+
+</mapper>

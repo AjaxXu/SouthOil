@@ -1,0 +1,104 @@
+.left-user {
+    float: left;
+    margin-left: 20px;}
+
+
+.left-20 {
+    float: left;
+    margin-left: 1px;
+}
+.bth-query{
+    margin-top:-6px;
+}
+
+#search_name {
+    max-width: 200px;
+}
+
+#type-select {
+    width: 200px;
+}
+
+.label-top {
+    margin-top: 10px;
+}
+
+.select-w {
+    width: 100px !important;
+    margin-left: 20px !important;
+}
+
+.margin-top10 {
+    margin-top: 10px;
+}
+
+.property-width {
+    width: 185px;
+}
+.property-width-2 {
+    width: 156px;
+}
+
+.block {
+    display: block;
+}
+
+.div-left {
+    width: 100%;
+    float: left;
+    height: 75%;
+}
+
+#radioParam {
+    max-width: 180px;
+}
+
+.myMark{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index:9999;
+    background-color:#000;
+    background: rgba(0, 0, 0, 0.5);
+    text-align: center;
+    vertical-align: middle;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+}
+.off{
+    display: none;
+}
+.cursor{
+ cursor: pointer;
+}
+.loading{
+    /*display:inline-block;*/
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 5px solid #BEBEBE;
+    border-left: 5px solid #498aca;
+    animation: load 1s linear infinite;
+    -moz-animation:load 1s linear infinite;
+    -webkit-animation: load 1s linear infinite;
+    -o-animation:load 1s linear infinite;
+}
+@-webkit-keyframes load
+{
+    from{-webkit-transform:rotate(0deg);}
+    to{-webkit-transform:rotate(360deg);}
+}
+@-moz-keyframes load
+{
+    from{-moz-transform:rotate(0deg);}
+    to{-moz-transform:rotate(360deg);}
+}
+@-o-keyframes load
+{
+    from{-o-transform:rotate(0deg);}
+    to{-o-transform:rotate(360deg);}
+}
+
+
